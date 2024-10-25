@@ -11,6 +11,7 @@ export default function Login() {
     const onFinish = (values) => {
         console.log('Success:', values);
         setEtapa(1);
+        window.location='/Home'
     };
 
     return (

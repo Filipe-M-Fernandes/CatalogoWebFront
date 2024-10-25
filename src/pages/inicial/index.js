@@ -2,13 +2,18 @@ import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons
 import { Avatar, Col, Dropdown, Layout, Menu, Row, Space, Typography } from 'antd';
 
 import React, { useEffect, useState } from 'react';
+import { Produtos, Dashboard } from '../';
+import { Link, Route, Routes } from 'react-router-dom';
+
+
 export default function Inicial() {
-    const [selectedMenu, setSelectedMenu] = useState('home');
+    const [selectedMenu, setSelectedMenu] = useState('dashboard');
     const { Header, Content } = Layout;
     const { Title } = Typography;
 
     const handleMenuClick = ({ key }) => {
         setSelectedMenu(key);
+       
     };
 
     const userMenu = (
@@ -40,22 +45,22 @@ export default function Inicial() {
                 onClick={handleMenuClick}
                 className="menu"
             >
-                <Menu.Item key="home">Início</Menu.Item>
-                <Menu.SubMenu key="products" title="Produtos">
-                    <Menu.Item key="product1">Produto 1</Menu.Item>
-                    <Menu.Item key="product2">Produto 2</Menu.Item>
-                    <Menu.Item key="product3">Produto 3</Menu.Item>
-                </Menu.SubMenu>
-                <Menu.SubMenu key="services" title="Serviços">
-                    <Menu.Item key="service1">Serviço 1</Menu.Item>
-                    <Menu.Item key="service2">Serviço 2</Menu.Item>
+                <Menu.Item key="dashboard"><Link to="/dashboard">Início</Link></Menu.Item>
+                <Menu.Item key="produtos"><Link to="/produtos">Produtos</Link></Menu.Item>
+                <Menu.SubMenu key="3" title="Cadastros">
+                    <Menu.Item key="service1">Produtos</Menu.Item>
+                    <Menu.Item key="service2">Usuarios</Menu.Item>
                 </Menu.SubMenu>
             </Menu>
 
             <Content className="content">
-                <Title level={2}>Bem-vindo à Página Inicial</Title>
-                <p>Conteúdo da página vai aqui.</p>
+                <Routes>
+                    <Route path="/produtos" element={<Produtos />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                </Routes>
+               
             </Content>
+
         </Layout>
     );
 }

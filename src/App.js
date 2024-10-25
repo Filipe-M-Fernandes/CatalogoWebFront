@@ -11,8 +11,9 @@ function App() {
 
       <Router>
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/Inicial" element={<Inicial />} />
+          <Route exact path="/" element={<Login />} />
+          <Route exact path="/Home" element={<Inicial />} />
+          <Route path="*" element={<Inicial />} />
         </Routes>
       </Router>
     </ConfigProvider>
