@@ -1,6 +1,7 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Card, Checkbox, Col, Form, Input, Layout, Row, Select, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
+import api from '../../services/api';
 
 export default function Login() {
 
@@ -12,7 +13,18 @@ export default function Login() {
         console.log('Success:', values);
         setEtapa(1);
         window.location='/Home'
+        fazerLogin();
     };
+
+    function fazerLogin() {
+        api.post("").then(res => {
+
+        }).catch(
+            err => {
+
+            }
+        );
+    }
 
     return (
         <div className="login-container">
