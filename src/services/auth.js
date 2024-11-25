@@ -6,7 +6,8 @@ export const NOMELOCAL_KEY = "@Catalogo-NomeLocal";
 export const NOMEUSUARIO_KEY = "@Catalogo-NomeUsuario";
 export const IDUSUARIO_KEY = "@Catalogo-IdUsuario";
 export const EMAILUSUARIO_KEY = "@Catalogo-EmailUsuario";
-export const linkApi = process.env.REACT_APP_PUBLIC_URL || 'https://localhost:7205/';
+export const MENU_KEY = "@Catalogo-Manu";
+export const linkApi = process.env.REACT_APP_PUBLIC_URL || 'https://localhost:7115/';
 
 export const isAuthenticated = () => localStorage.getItem(TOKEN_KEY) !== null;
 export const getToken = () => localStorage.getItem(TOKEN_KEY);
@@ -17,6 +18,7 @@ export const getNomeLocal = () => localStorage.getItem(NOMELOCAL_KEY);
 export const getNomeUsuario = () => localStorage.getItem(NOMEUSUARIO_KEY);
 export const getIdUsuario = () => localStorage.getItem(IDUSUARIO_KEY);
 export const getEmailUsuario = () => localStorage.getItem(EMAILUSUARIO_KEY);
+export const getMenuAberto = () => localStorage.getItem(MENU_KEY);
 
 export const login = token => {
   localStorage.setItem(TOKEN_KEY, token);
@@ -42,6 +44,9 @@ export const setIdUsuario = idUsuario => {
 export const setEmailUsuario = emailUsuario => {
   localStorage.setItem(EMAILUSUARIO_KEY, emailUsuario);
 };
+export const setMenuAberto = menu => {
+  localStorage.setItem(MENU_KEY, menu);
+}
 
 export const logout = () => {
   localStorage.removeItem(TOKEN_KEY);
@@ -52,6 +57,7 @@ export const logout = () => {
   localStorage.removeItem(NOMEUSUARIO_KEY);
   localStorage.removeItem(IDUSUARIO_KEY);
   localStorage.removeItem(EMAILUSUARIO_KEY);
+  localStorage.removeItem(LOCAL_KEY);
   if (window.location.pathname !== '/') window.location = '/';
 };
 

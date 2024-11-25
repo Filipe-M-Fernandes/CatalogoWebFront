@@ -1,19 +1,17 @@
 import { Card, Col, Input, Pagination, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
+import api from '../../services/api';
+import ModalDetalhes from './modalDetalhes';
 
 export default function Produtos() {
     const { Search } = Input;
     const { Meta } = Card;
-    const [lista, setLista] = useState([
-        { id: 1, title: 'Item 1', description: 'Descrição do item 1', image: 'https://via.placeholder.com/150' },
-        { id: 2, title: 'Item 2', description: 'Descrição do item 2', image: 'https://via.placeholder.com/150' },
-        { id: 3, title: 'Item 3', description: 'Descrição do item 3', image: 'https://via.placeholder.com/150' },
-
-        { id: 21, title: 'Item 21', description: 'Descrição do item 21', image: 'https://via.placeholder.com/150' },
-    ]);
+    const [lista, setLista] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
-
+    const [totalItens, setTotalItens] = useState(0);
+    const [abrirModal, setAbrirModal] = useState(false);
+    const [dadosProduto, setDadosProduto] = useState({});
     const handleSearch = (value) => {
         const filtered = lista.filter((item) =>
             item.title.toLowerCase().includes(value.toLowerCase()) ||
@@ -26,6 +24,31 @@ export default function Produtos() {
     const handleChangePage = (page) => {
         setCurrentPage(page);
     };
+    useEffect(() => {
+        if (!!currentPage) {
+            buscarProdutos();
+        }
+    }, [currentPage]);
+
+    function buscarProdutos() {
+        api.get(`Produto/Buscar?PageNumber=${currentPage}&PageSize=${itemsPerPage}`).then(
+            res => {
+
+                setLista(res.data.items)
+                setTotalItens(res.data.totalItems);
+            }
+        ).catch(
+            err => {
+                console.log(err);
+            }
+        )
+    }
+
+    function exibirProduto(item) {
+        setDadosProduto(item);
+        setAbrirModal(true);
+    }
+
     return (
         <div className="item-list-page">
             <div className="search-bar">
@@ -36,27 +59,31 @@ export default function Produtos() {
                     size="large"
                 />
             </div>
+            <main className="items-content">
+                <div gutter={[16, 16]} className="items-grid">
+                    {lista.map((item) => (
 
-            <Row gutter={[16, 16]} className="items-grid">
-                {lista.map((item) => (
-                    <Col xs={12} sm={8} md={8} lg={6} key={item.id}>
                         <Card
+                            key={item.pro_id}
+                            className="item-card"
                             hoverable
-                            cover={<img alt={item.title} src={item.image} />}
+                            onClick={() => { exibirProduto(item) }}
+                            cover={<img className="item-image" alt={item.pro_id} src={`data:image/jpg;base64,${item.imagem}`} />}
                         >
-                            <Meta title={item.title} description={item.description} />
+                            <Meta title={item.pro_descricao} description={item.pro_descricaoresumida} />
                         </Card>
-                    </Col>
-                ))}
-            </Row>
 
+                    ))}
+                </div>
+            </main>
             <Pagination
                 className="pagination"
                 current={currentPage}
                 pageSize={itemsPerPage}
-                total={100}
+                total={totalItens}
                 onChange={handleChangePage}
             />
+            <ModalDetalhes open={abrirModal} setOpen={setAbrirModal} produto={dadosProduto} />
         </div>
     );
 }
