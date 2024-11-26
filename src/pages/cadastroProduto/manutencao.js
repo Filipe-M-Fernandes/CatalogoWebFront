@@ -30,6 +30,7 @@ export default function CadastroProduto({ form, produto, editando }) {
     useEffect(() => {
         if (editando) {
             form.setFieldsValue(produto);
+            buscarGrades(produto.pro_id);
         }
     }, [editando]);
 
@@ -53,6 +54,19 @@ export default function CadastroProduto({ form, produto, editando }) {
         })
     }
 
+    function buscarGrades(id) {
+        api.get(`ProdutoGrade/BuscarGradesProdutos?produtoId=${id}`).then(
+            res => {
+                setListaGrade(res.data);
+            }
+        ).catch(err => {
+            console.log(err);
+        });
+    }
+    
+    function buscarListaPreco() {
+        api.get("");
+    }
     return (
         <Form layout="vertical" form={form}>
             <Tabs defaultActiveKey="1">

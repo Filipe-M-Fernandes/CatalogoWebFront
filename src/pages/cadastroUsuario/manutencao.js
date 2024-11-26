@@ -22,6 +22,7 @@ export default function CadastroUsuario({ form, usuario = null, editando = false
         }
     }, [editando]);
 
+   
     return (
         <div style={{ maxWidth: 600, margin: "0 auto", padding: "20px" }}>
             <h2>Cadastro de Usuário</h2>
@@ -81,7 +82,7 @@ export default function CadastroUsuario({ form, usuario = null, editando = false
                 </Form.Item>
 
                 <Form.Item
-                    
+
                     name="usu_admin"
                     valuePropName="checked"
                 >

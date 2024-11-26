@@ -33,7 +33,6 @@ export default function Produtos() {
     function buscarProdutos() {
         api.get(`Produto/Buscar?PageNumber=${currentPage}&PageSize=${itemsPerPage}`).then(
             res => {
-
                 setLista(res.data.items)
                 setTotalItens(res.data.totalItems);
             }

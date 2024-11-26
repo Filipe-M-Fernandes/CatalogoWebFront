@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Input, Typography, Divider, Image } from "antd";
+import { Modal, Button, Input, Typography, Divider, Image, Popconfirm } from "antd";
 import { FormatValor } from "../../helpers";
 
 export default function ModalDetalhes({ open, setOpen, produto = {} }) {
@@ -11,6 +11,10 @@ export default function ModalDetalhes({ open, setOpen, produto = {} }) {
             setPossuiDesc(!!produto.valorPromocao);
         }
     }, [produto])
+
+    function solicitarEstoque() {
+
+    }
     return (
         <Modal
             title={`${produto.pro_codigo} - ${produto.pro_descricao}`}
@@ -34,6 +38,15 @@ export default function ModalDetalhes({ open, setOpen, produto = {} }) {
                     {possuiDesc && <Text style={{ color: "red", marginLeft: "10px" }}>
                         {FormatValor(produto.valorPromocao, true, true)}
                     </Text>}
+                    <Text strong style={{ marginLeft: "10px" }}>Estoque: </Text>
+                    {produto.estoque > 0 ? <Text > {FormatValor(produto.estoque, true, false, 2)} </Text> : <Popconfirm
+                        title="Solicitar Estoque?"
+                        onConfirm={() => solicitarEstoque(produto)}
+                        okText="Sim"
+                        cancelText="Não"
+                    >
+                        <Text style={{ cursor: "pointer" }}> Sem Estoque </Text>
+                    </Popconfirm>}
                     <Divider />
                     <Text strong>Descrição: </Text>
                     <Text>{produto.pro_descricaodetalhada}</Text>

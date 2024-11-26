@@ -10,6 +10,8 @@ export default function DrawerCadastroProduto({ abrir, setAbrir, produto, setPro
     const onClose = () => {
         setAbrir(false);
         form.resetFields();
+        setProduto(null);
+        setEditando(false);
     }
 
     useEffect(() => {
