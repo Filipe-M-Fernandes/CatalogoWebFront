@@ -13,12 +13,8 @@ export default function Produtos() {
     const [abrirModal, setAbrirModal] = useState(false);
     const [dadosProduto, setDadosProduto] = useState({});
     const handleSearch = (value) => {
-        const filtered = lista.filter((item) =>
-            item.title.toLowerCase().includes(value.toLowerCase()) ||
-            item.description.toLowerCase().includes(value.toLowerCase())
-        );
-        setLista(filtered);
-        setCurrentPage(1); // Resetar para a primeira página após a pesquisa
+        console.log("Filtros " + value);
+
     };
 
     const handleChangePage = (page) => {
@@ -46,6 +42,15 @@ export default function Produtos() {
     function exibirProduto(item) {
         setDadosProduto(item);
         setAbrirModal(true);
+        acessoProduto(item);
+    }
+
+    function acessoProduto(item) {
+        api.post(`Acessos/AcessoProduto?ProId=${item.pro_id}`).then(res => {
+            console.log("Produto " + item.pro_descricao + " acessado");
+        }).then(err => {
+            console.log(err);
+        });
     }
 
     return (
