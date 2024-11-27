@@ -7,6 +7,7 @@ export default function DrawerCadastroUsuario({ abrir, setAbrir, usuario, setUsu
     const [form] = Form.useForm();
     const [editando, setEditando] = useState(false);
     const [usuarioMnt, setUsuarioMnt] = useState(null);
+    const [carregando, setCarregando] = useState(false);
     const onClose = () => {
         setAbrir(false);
         form.resetFields();
@@ -37,7 +38,7 @@ export default function DrawerCadastroUsuario({ abrir, setAbrir, usuario, setUsu
                         </Button>
                     </Col>
                     <Col>
-                        <Button onClick={() => form.submit()} icon={<SaveOutlined />} size="large" type="primary" htmlType="submit">
+                        <Button loading={carregando} onClick={() => form.submit()} icon={<SaveOutlined />} size="large" type="primary" htmlType="submit">
                             Salvar
                         </Button>
                     </Col>
@@ -45,6 +46,6 @@ export default function DrawerCadastroUsuario({ abrir, setAbrir, usuario, setUsu
             </div>
         }
     >
-        <CadastroUsuario form={form} usuario={usuarioMnt} editando={editando} />
+        <CadastroUsuario form={form} usuario={usuarioMnt} editando={editando} setEditando={setEditando} setCarregando={setCarregando}/>
     </Drawer>)
 }

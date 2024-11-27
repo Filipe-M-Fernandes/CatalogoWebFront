@@ -3,7 +3,7 @@ import './App.css';
 import ptBR from 'antd/lib/locale/pt_BR';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
-import { Inicial, Login } from './pages';
+import { AtivarConta, Inicial, Login } from './pages';
 
 function App() {
   return (
@@ -14,6 +14,7 @@ function App() {
           <Route exact path="/" element={<Login />} />
           <Route exact path="/Home" element={<Inicial />} />
           <Route path="*" element={<Inicial />} />
+          <Route exact path="/ativar-novo-usuario" element={<AtivarConta/>} />
         </Routes>
       </Router>
     </ConfigProvider>
