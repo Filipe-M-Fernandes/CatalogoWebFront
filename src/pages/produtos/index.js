@@ -14,7 +14,7 @@ export default function Produtos() {
     const [dadosProduto, setDadosProduto] = useState({});
     const handleSearch = (value) => {
         console.log("Filtros " + value);
-
+        buscarProdutos(value);
     };
 
     const handleChangePage = (page) => {
@@ -26,8 +26,8 @@ export default function Produtos() {
         }
     }, [currentPage]);
 
-    function buscarProdutos() {
-        api.get(`Produto/Buscar?PageNumber=${currentPage}&PageSize=${itemsPerPage}`).then(
+    function buscarProdutos(filtro) {
+        api.get(`Produto/Buscar?${!!filtro ? 'filtro=' + filtro + '&' : ''}PageNumber=${currentPage}&PageSize=${itemsPerPage}`).then(
             res => {
                 setLista(res.data.items)
                 setTotalItens(res.data.totalItems);
