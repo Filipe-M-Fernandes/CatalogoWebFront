@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Tabs, Select, Upload, InputNumber, Checkbox, Row, Col, Table, Tag } from 'antd';
+import { Form, Input, Button, Tabs, Select, Upload, InputNumber, Checkbox, Row, Col, Table, Tag, Space, Popconfirm } from 'antd';
 import { PlusCircleOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import api from '../../services/api';
+import { FormatValor } from '../../helpers';
+import { render } from '@testing-library/react';
 
 export default function CadastroProduto({ form, produto, editando }) {
     const { TabPane } = Tabs;
@@ -12,8 +14,9 @@ export default function CadastroProduto({ form, produto, editando }) {
     const [listaSubGrupo, setListaSubGrupo] = useState([]);
     const [listaGrade, setListaGrade] = useState([]);
     const [listaPreco, setListaPreco] = useState([]);
-    const [usaGrade, setUsaGrade] = useState(false);
     const [listaTabelaPreco, setListaTabelaPreco] = useState([]);
+    const [usaGrade, setUsaGrade] = useState(false);
+    const [listaUnidadeMedida, setListaUnidadeMedida] = useState([]);
     const handleAddGrade = () => {
         setGrades([...grades, { description: '', ean: '' }]);
     };
@@ -25,12 +28,15 @@ export default function CadastroProduto({ form, produto, editando }) {
     useEffect(() => {
         buscarGrupos();
         buscarSubgrupo();
+        buscarUnidadeMedida();
+        buscarListaPreco();
     }, []);
 
     useEffect(() => {
         if (editando) {
             form.setFieldsValue(produto);
             buscarGrades(produto.pro_id);
+            buscarPreco(produto.pro_id);
         }
     }, [editando]);
 
@@ -57,16 +63,57 @@ export default function CadastroProduto({ form, produto, editando }) {
     function buscarGrades(id) {
         api.get(`ProdutoGrade/BuscarGradesProdutos?produtoId=${id}`).then(
             res => {
-                setListaGrade(res.data);
+                if (res.data.length > 0) {
+                    setListaGrade(res.data);
+                    form.setFieldsValue({ pro_usagrade: true });
+                    setUsaGrade(true);
+                }
             }
         ).catch(err => {
             console.log(err);
         });
     }
-    
+
     function buscarListaPreco() {
-        api.get("");
+        api.get("ListaPreco/Listar").then(
+            res => {
+                setListaTabelaPreco(res.data);
+            }
+        ).catch(
+            err => {
+                console.log(err);
+            }
+        );
     }
+
+    function buscarUnidadeMedida() {
+        api.get("UnidadeMedida/Buscar").then(
+            res => {
+                setListaUnidadeMedida(res.data);
+            }
+        ).catch(
+            err => {
+                console.log(err);
+            }
+        )
+    }
+
+    function buscarPreco(proId) {
+        api.get(`ListaPrecoItem/Buscar?proId=${proId}`).then(
+            res => {
+                setListaPreco(res.data);
+            }
+        ).catch(
+            err => {
+                console.log(err);
+            }
+        )
+    }
+
+    function excluirPreco(item) {
+
+    }
+
     return (
         <Form layout="vertical" form={form}>
             <Tabs defaultActiveKey="1">
@@ -124,8 +171,9 @@ export default function CadastroProduto({ form, produto, editando }) {
                         <Col span={4}>
                             <Form.Item label="Unidade de Medida" name="ump_id">
                                 <Select placeholder='Selecione a unidade de medida'>
-                                    <Select.Option value="unit1">Unidade 1</Select.Option>
-                                    <Select.Option value="unit2">Unidade 2</Select.Option>
+                                    {listaUnidadeMedida.map(un =>
+                                        <Select.Option value={un.ump_id}>{un.ump_descricao}</Select.Option>
+                                    )}
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -209,7 +257,7 @@ export default function CadastroProduto({ form, produto, editando }) {
                         }, {
                             title: 'Ativo',
                             render: (prg) => (
-                                <Tag>{prg.prg_ativo}</Tag>
+                                <Tag.CheckableTag checked={prg.prg_ativa}>{prg.prg_ativa? "Sim": "Não"}</Tag.CheckableTag>
                             )
                         }]} dataSource={listaGrade} />
                     }
@@ -243,24 +291,44 @@ export default function CadastroProduto({ form, produto, editando }) {
                     <Table columns={[
                         {
                             title: 'Tabela de Preço',
-                            dataIndex: 'ltp_nome',
-                            key: 'ltp_nome'
+                            render: (e) => (
+                                e.listapreco.ltp_nome
+                            )
                         }, {
                             title: 'Valor',
-                            dataIndex: 'lpi_valorvenda',
-                            key: 'lpi_valorvenda'
+                            render: (e) => (
+                                FormatValor(e.lpi_valorvenda, true, true, 3)
+                            ),
                         }, {
                             title: 'Principal',
-                            dataIndex: 'ltp_principal',
-                            key: 'ltp_principal'
+                            render: (e) => (
+                                e.listapreco.ltp_principal ? "Sim" : "Não"
+                            )
                         }, {
                             title: 'Ativo',
-                            dataIndex: 'ltp_ativa',
-                            key: 'ltp_ativa'
+                            render: (e) => (
+                                e.listapreco.ltp_ativa ? "Sim" : "Não"
+                            )
                         }, {
                             title: 'Promoção',
-                            dataIndex: 'ltp_promocao',
-                            key: 'ltp_promocao'
+                            render: (e) => (
+                                e.listapreco.ltp_promocao ? "Sim" : "Não"
+                            )
+                        }, {
+                            title: 'Ações',
+                            key: 'actions',
+                            render: (_, record) => (
+                                <Space>
+                                    <Popconfirm
+                                        title="Tem certeza que deseja excluir?"
+                                        onConfirm={() => excluirPreco(record)}
+                                        okText="Sim"
+                                        cancelText="Não"
+                                    >
+                                        <Button type="primary">Excluir</Button>
+                                    </Popconfirm>
+                                </Space>
+                            ),
                         }
                     ]} dataSource={listaPreco} />
 
